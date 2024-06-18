@@ -1,0 +1,216 @@
+@prefix t: <https://ec.europa.eu/sustainable-finance-taxonomy/assets/taxonomy/>.
+@prefix core: <http://www.w3.org/2004/02/skos/core#>.
+@prefix sml: <https://w3id.org/def/smls-owl#>.
+@prefix index: <https://ec.europa.eu/competition/mergers/cases/index/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix nace: <http://dd.eionet.europa.eu/vocabulary/eurostat/nace_r2/>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Define Classes
+sml:Activity a rdfs:Class;
+    rdfs:label "Activity"@en;
+    rdfs:comment "A class representing an economic activity in the EU taxonomy for CSRD"@en.
+
+sml:Sector a rdfs:Class;
+    rdfs:label "Sector"@en;
+    rdfs:comment "A class representing a sector in the EU taxonomy for CSRD"@en.
+
+sml:ClimateAdaptationInfo a rdfs:Class;
+    rdfs:label "Climate Adaptation Info"@en;
+    rdfs:comment "Information specific to Climate Adaptation"@en.
+
+sml:ClimateMitigationInfo a rdfs:Class;
+    rdfs:label "Climate Mitigation Info"@en;
+    rdfs:comment "Information specific to Climate Mitigation"@en.
+
+# Defining Substantial Contribution Criteria etc. as classes
+sml:SubstantialContributionCriteria a owl:Class;
+    rdfs:label "Substantial Contribution Criteria"@en;
+    rdfs:comment "A class that represents the substantial contribution criteria for an activity"@en.
+
+sml:DNSHonClimateMitigation a owl:Class;
+    rdfs:label "DNSH on Climate Mitigation"@en;
+    rdfs:comment "A class that represents the DNSH information for Climate Mitigation"@en.
+
+sml:DNSHonClimateAdaptation a owl:Class;
+    rdfs:label "DNSH on Climate Adaptation"@en;
+    rdfs:comment "A class that represents the DNSH information for Climate Adaptation"@en.
+
+# Additional classes for other DNSH aspects (Water, Circular Economy, Pollution Prevention, Biodiversity, Footnotes)
+sml:DNSHonWater a owl:Class;
+    rdfs:label "DNSH on Water"@en;
+    rdfs:comment "A class that represents the DNSH information for Water"@en.
+
+sml:DNSHonCircularEconomy a owl:Class;
+    rdfs:label "DNSH on Circular Economy"@en;
+    rdfs:comment "A class that represents the DNSH information for Circular Economy"@en.
+
+sml:DNSHonPollutionPrevention a owl:Class;
+    rdfs:label "DNSH on Pollution Prevention"@en;
+    rdfs:comment "A class that represents the DNSH information for Pollution Prevention"@en.
+
+sml:DNSHonBiodiversity a owl:Class;
+    rdfs:label "DNSH on Biodiversity"@en;
+    rdfs:comment "A class representing the Do No Significant Harm information for Biodiversity associated with an activity"@en.
+
+sml:Footnotes a owl:Class;
+    rdfs:label "Footnotes"@en;
+    rdfs:comment "A class representing footnotes associated with an activity or DNSH aspect"@en.
+
+
+# Define relationships
+sml:belongsToSector a owl:ObjectProperty;
+    rdfs:label "belongs to sector"@en;
+    rdfs:comment "A property that links an activity to the sector it belongs to"@en;
+    rdfs:domain sml:Activity;
+    rdfs:range sml:Sector.
+
+sml:hasActivity a owl:ObjectProperty;
+    rdfs:label "has activity"@en;
+    rdfs:comment "A property that links a sector to its activities"@en;
+    rdfs:domain sml:Sector;
+    rdfs:range sml:Activity;
+    owl:inverseOf sml:belongsToSector.
+
+sml:hasPart a owl:ObjectProperty;
+    rdfs:label "has part"@en;
+    rdfs:comment "A property that links an activity to related nodes"@en;
+    rdfs:domain sml:Activity;
+    rdfs:range owl:Thing.
+
+sml:isPartOf a owl:ObjectProperty;
+    rdfs:label "is part of"@en;
+    rdfs:comment "A property that links a related node to its activity"@en;
+    rdfs:domain owl:Thing; # if various kinds of things can be part of an Activity
+    rdfs:range sml:Activity;
+    owl:inverseOf sml:hasPart.
+
+sml:hasNaceCode a owl:ObjectProperty;
+    rdfs:label "has NACE code"@en;
+    rdfs:comment "A property that links an activity to its NACE code"@en;
+    rdfs:domain sml:Activity;
+    rdfs:range nace:Code.
+
+sml:contributionType a owl:DatatypeProperty;
+    rdfs:label "contribution type"@en;
+    rdfs:comment "A property that specifies the contribution type of the activity, which can be either 'Enabling' or 'Transitional'"@en;
+    rdfs:domain sml:Activity;
+    rdfs:range xsd:string.  # The range is a string since the value is textual
+
+sml:hasSubstantialContributionCriteria a owl:ObjectProperty;
+    rdfs:label "has substantial contribution criteria"@en;
+    rdfs:comment "A property that links an activity to its substantial contribution criteria"@en;
+    rdfs:domain [ a owl:Class; owl:unionOf (sml:ClimateAdaptationInfo sml:ClimateMitigationInfo) ];
+    rdfs:range sml:SubstantialContributionCriteria.
+
+sml:hasDNSHonClimateMitigation a owl:ObjectProperty;
+    rdfs:label "has DNSH on Climate Mitigation"@en;
+    rdfs:comment "A property that links an activity to its DNSH information for Climate Mitigation"@en;
+    rdfs:domain sml:ClimateAdaptationInfo;
+    rdfs:range sml:DNSHonClimateMitigation.
+
+sml:hasDNSHonClimateAdaptation a owl:ObjectProperty;
+    rdfs:label "has DNSH on Climate Adaptation"@en;
+    rdfs:comment "A property that links an activity to its DNSH information for Climate Adaptation"@en;
+    rdfs:domain sml:ClimateMitigationInfo;
+    rdfs:range sml:DNSHonClimateAdaptation.
+
+sml:hasDNSHonWater a owl:ObjectProperty;
+    rdfs:label "has DNSH on Water"@en;
+    rdfs:comment "A property that links an activity to its DNSH information for Water"@en;
+    rdfs:domain [ a owl:Class; owl:unionOf (sml:ClimateAdaptationInfo sml:ClimateMitigationInfo) ];
+    rdfs:range sml:DNSHonWater.
+
+sml:hasDNSHonCircularEconomy a owl:ObjectProperty;
+    rdfs:label "has DNSH on Circular Economy"@en;
+    rdfs:comment "A property that links an activity to its DNSH information for Circular Economy"@en;
+    rdfs:domain [ a owl:Class; owl:unionOf (sml:ClimateAdaptationInfo sml:ClimateMitigationInfo) ];
+    rdfs:range sml:DNSHonCircularEconomy.
+
+sml:hasDNSHonPollutionPrevention a owl:ObjectProperty;
+    rdfs:label "has DNSH on Pollution Prevention"@en;
+    rdfs:comment "A property that links an activity to its DNSH information for Pollution Prevention"@en;
+    rdfs:domain [ a owl:Class; owl:unionOf (sml:ClimateAdaptationInfo sml:ClimateMitigationInfo) ];
+    rdfs:range sml:DNSHonPollutionPrevention.
+
+sml:hasDNSHonBiodiversity a owl:ObjectProperty;
+    rdfs:label "has DNSH on Biodiversity"@en;
+    rdfs:comment "A property that links an activity to its DNSH information for Biodiversity"@en;
+    rdfs:domain [ a owl:Class; owl:unionOf (sml:ClimateAdaptationInfo sml:ClimateMitigationInfo) ];
+    rdfs:range sml:DNSHonBiodiversity.
+
+sml:hasFootnotes a owl:ObjectProperty;
+    rdfs:label "has footnotes"@en;
+    rdfs:comment "A property that links to related footnotes"@en;
+    rdfs:domain [ a owl:Class; owl:unionOf (sml:ClimateAdaptationInfo sml:ClimateMitigationInfo) ];
+    rdfs:range sml:Footnotes.
+
+sml:description a owl:DatatypeProperty;
+    rdfs:label "description"@en;
+    rdfs:comment "A property to store a textual description"@en;
+    rdfs:domain owl:Thing;
+    rdfs:range xsd:string.
+
+
+sml:refersExternalResource a owl:DatatypeProperty ;
+    rdfs:label "refers external resource"@en ;
+    rdfs:comment "A property to store an external resource as a string"@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range xsd:string .
+
+sml:hasLimitation a owl:DatatypeProperty ;
+    rdfs:label "has limitation"@en ;
+    rdfs:comment "A property to store a limitation as a string"@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range xsd:string .
+
+sml:activityNumber a owl:DatatypeProperty;
+    rdfs:label "activity number"@en;
+    rdfs:comment "A property that represents the activity number as a string"@en;
+    rdfs:domain sml:Activity;
+    rdfs:range xsd:string.
+
+
+
+#Define Sectors
+t:1 a sml:Sector;
+    core:prefLabel "Forestry"@en.
+
+t:2 a sml:Sector;
+    core:prefLabel "Environmental protection and restoration activities"@en.
+
+t:3 a sml:Sector;
+    core:prefLabel "Manufacturing"@en.
+
+t:4 a sml:Sector;
+    core:prefLabel "Energy"@en.
+
+t:5 a sml:Sector;
+    core:prefLabel "Water supply, sewerage, waste management and remediation"@en.
+
+t:6 a sml:Sector;
+    core:prefLabel "Transport"@en.
+
+t:7 a sml:Sector;
+    core:prefLabel "Construction and real estate"@en.
+
+t:8 a sml:Sector;
+    core:prefLabel "Information and communication"@en.
+
+t:9 a sml:Sector;
+    core:prefLabel "Professional, scientific and technical activities"@en.
+
+t:10 a sml:Sector;
+    core:prefLabel "Financial and insurance activities"@en.
+
+t:11 a sml:Sector;
+    core:prefLabel "Education"@en.
+
+t:12 a sml:Sector;
+    core:prefLabel "Human health and social work activities"@en.
+
+t:13 a sml:Sector;
+    core:prefLabel "Arts, entertainment and recreation"@en.
+
